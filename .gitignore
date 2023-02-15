@@ -7,3 +7,5 @@ app/*/*/*/__pycache__/
 .env/
 .venv/
 venv/
+migrations
+app/core/migrations

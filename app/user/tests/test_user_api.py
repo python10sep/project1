@@ -20,9 +20,9 @@ from rest_framework import status
 
 from django.urls import reverse
 
-CREATE_USER_URL = reverse('user:create')
-TOKEN_URL = reverse('user:token')
-ME_URL = reverse('user:me')
+CREATE_USER_URL = reverse('create')
+TOKEN_URL = reverse('token')
+ME_URL = reverse('me')
 
 
 class PublicUserApiTests(TestCase):

@@ -4,6 +4,13 @@ Test the models
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+
+
+# we have to import `models` from `core`
+# instead of importing it from `app.core`
+# Because `core` is registered as an application in installed_apps (settings.py)
+from core import models
 
 
 class ModelTests(TestCase):
@@ -69,3 +76,32 @@ class ModelTests(TestCase):
         # `create_superuser` method
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_create_job_title(self):
+        """Test creating a job title is successful"""
+
+        user = get_user_model().objects.create_user(
+            "test@example.com",
+            "password@123"
+        )
+
+        portal = models.Portal.objects.create(
+            name="naukri.com",
+            description="popular website for job hunting"
+        )
+        job_description = models.JobDescription.objects.create(
+            role="To build backend microservices",
+            description_text="should know git, CICD, linux and must know Python",
+            pub_date=timezone.now()
+        )
+        job_title = models.JobTitle.objects.create(
+            user=user,
+            title="Python developer",
+            job_description=job_description,
+            portal=portal
+        )
+
+        self.assertEqual(str(portal), portal.name)
+        self.assertEqual(
+            str(job_title),
+            job_title.title + f" ( {job_title.portal} )")
