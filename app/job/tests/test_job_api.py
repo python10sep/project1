@@ -18,12 +18,32 @@ from job.serializers import (
 JOB_TITLE_URL = reverse("jobtitle:jobtitle-list")
 
 
+def create_job_description(**params):
+    """create and return new job description"""
+
+    defaults = {
+        "title": "Simple Job Title",
+        "description_text": "should know git, CICD, linux and must know Python",
+        "pub_date": timezone.now()
+    }
+    defaults.update(params)
+    job_description = JobDescription.objects.create(
+        role="To build backend microservices1",
+        description_text="should know git, CICD, linux and must know Python",
+        pub_date=timezone.now()
+    )
+    return job_description
+
+
 def create_job_title(user, portal, job_description, **params):
     """create and return a sample job_title"""
 
     defaults = {
-        "title": "Simple Job Title"
+        "title": "Simple Job Title",
     }
+
+    # we need new `JobDescription` for every `JobTitle`
+
     defaults.update(params)
     job_title = JobTitle.objects.create(
         user=user,
@@ -72,26 +92,30 @@ class PrivateJobTitleApiTests(TestCase):
     def test_retrieve_job_titles(self):
         """Test retrieving a list of job titles."""
 
-        self.portal.refresh_from_db()
-        self.job_description.refresh_from_db()
-        self.user.refresh_from_db()
-
         create_job_title(
             user=self.user,
             title="Python developer",
             portal=self.portal,
-            job_description=self.job_description
+            job_description=create_job_description()
         )
         create_job_title(
             user=self.user,
             title="Java developer",
             portal=self.portal,
-            job_description=self.job_description
+            job_description=create_job_description()
         )
+
+        # If you need to reload a model’s values from the database,
+        # you can use the refresh_from_db() method.
+        # TODO - refer
+        #  https://docs.djangoproject.com/en/4.1/ref/models/instances/#refreshing-objects-from-database
+        # NOTE - should be used when doing `delete` operations specifically.
+        self.portal.refresh_from_db()
+        self.job_description.refresh_from_db()
+        self.user.refresh_from_db()
 
         res = self.client.get(JOB_TITLE_URL)
 
-        breakpoint()
         job_titles = JobTitle.objects.all().order_by('-id')
         serializer = JobTitleSerializer(job_titles, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -100,26 +124,22 @@ class PrivateJobTitleApiTests(TestCase):
     def test_job_title_list_limited_to_user(self):
         """Test list of job titles is limited to authenticated user"""
 
-        self.portal.refresh_from_db()
-        self.job_description.refresh_from_db()
-        self.user.refresh_from_db()
-
         other_user = get_user_model().objects.create_user(
             "other@example.com",
             "password@321",
         )
 
         create_job_title(
-            user=self.other_user,
+            user=other_user,
             title="Python developer",
             portal=self.portal,
-            job_description=self.job_description
+            job_description=create_job_description()
         )
         create_job_title(
-            user=self.other_user,
+            user=other_user,
             title="Java developer",
             portal=self.portal,
-            job_description=self.job_description
+            job_description=create_job_description()
         )
 
         res = self.client.get(JOB_TITLE_URL)

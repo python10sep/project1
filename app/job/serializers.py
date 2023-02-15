@@ -11,7 +11,13 @@ class JobTitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = JobTitle
-        fields = ["id", "title"]
+
+        # You can also set the fields attribute to the
+        # special value '__all__' to indicate that all
+        # fields in the model should be used.
+        fields = "__all__"
+
+        # fields = ["id", "title"]
         read_only_fields = ["id"]
 
 
@@ -20,7 +26,8 @@ class PortalSerializer(serializers.ModelSerializer):
 
     class Meta:
         Model = Portal
-        fields = ["id", "name", "description"]
+        fields = "__all__"
+        # fields = ["id", "name", "description"]
         read_only_fields = ["id"]
 
 
@@ -29,7 +36,8 @@ class JobDescriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         Model = JobDescription
-        fields = ["id", "role", "description_text", "pub_date"]
+        fields = "__all__"
+        # fields = ["id", "role", "description_text", "pub_date"]
         read_only_fields = ["id"]
 
 
