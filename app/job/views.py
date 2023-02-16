@@ -14,7 +14,7 @@ from job import serializers
 class JobTitleViewSet(viewsets.ModelViewSet):
     """View for manage job title APIs"""
 
-    serializer_class = serializers.JobTitleSerializer
+    serializer_class = serializers.JobTitleDetailSerializer
 
     # represents objects that are available for this viewset.
     # queryset objects that are manageable by this view
@@ -34,3 +34,10 @@ class JobTitleViewSet(viewsets.ModelViewSet):
         """
 
         return self.queryset.filter(user=self.request.user).order_by("-id")
+
+    def get_serializer_class(self):
+        """Return the serializer class for request"""
+
+        if self.action == "list":
+            return serializers.JobTitleSerializer
+        return self.serializer_class

@@ -10,12 +10,19 @@ from rest_framework.test import APIClient
 from core.models import (JobTitle, JobDescription, Applicant, Portal)
 from job.serializers import (
     JobTitleSerializer,
+    JobTitleDetailSerializer,
     JobDescriptionSerializer,
     # ApplicantSerializer,
     PortalSerializer
 )
 
 JOB_TITLE_URL = reverse("jobtitle:jobtitle-list")
+
+
+def detail_url(job_title_id):
+    """create and return a job title detail URL"""
+
+    return reverse("jobtitle:jobtitle-detail", args=[job_title_id])
 
 
 def create_job_description(**params):
@@ -146,4 +153,24 @@ class PrivateJobTitleApiTests(TestCase):
 
         job_titles = JobTitle.objects.filter(user=self.user)
         serializer = JobTitleSerializer(job_titles, many=True)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_get_jobtitle_detail(self):
+        """Test get jobtitle detail"""
+
+        other_user = get_user_model().objects.create_user(
+            "other@example.com",
+            "password@321",
+        )
+
+        job_title = create_job_title(
+            user=other_user,
+            title="Python developer",
+            portal=self.portal,
+            job_description=create_job_description()
+        )
+        url = detail_url(job_title.id)
+        res = self.client.get(url)
+
+        serializer = JobTitleDetailSerializer(job_title)
         self.assertEqual(res.data, serializer.data)
