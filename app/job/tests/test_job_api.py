@@ -164,4 +164,29 @@ class PrivateJobTitleApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(serializer.data, res.data)
 
+    def test_create_job_title(self):
+        """Test creating a recipe"""
+
+        portal = Portal.objects.create(
+            name="naukri1.com",
+            description="famous job hunting website"
+        )
+        job_description = create_job_description()
+        payload = {
+            "title": "Python developer",
+            # "user": self.user.id,
+            "portal": portal.id,
+            "job_description": job_description.id
+        }
+        res = self.client.post(JOB_TITLE_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        job_title = JobTitle.objects.get(id=res.data["id"])
+        portal = Portal.objects.get(id=res.data["portal"])
+        self.assertEqual(portal.id, res.data["portal"])
+        job_description = JobDescription.objects.get(
+            id=res.data["job_description"]
+        )
+        self.assertEqual(job_description.id, res.data["job_description"])
+        self.assertEqual(job_title.user, self.user)
+
 

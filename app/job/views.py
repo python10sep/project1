@@ -19,6 +19,11 @@ from job import serializers
 
 
 class JobTitleViewSet(viewsets.ModelViewSet):
+
+    # TODO - refer
+    # https://www.django-rest-framework.org/api-guide/generic-views/#genericapiview
+    # https://www.django-rest-framework.org/api-guide/generic-views/#methods
+
     serializer_class = serializers.JobTitleDetailSerializer
 
     # represents objects that are available for this viewset.
@@ -44,3 +49,17 @@ class JobTitleViewSet(viewsets.ModelViewSet):
             return serializers.JobTitleSerializer
         return self.serializer_class
 
+    def perform_create(self, serializer):
+        """Create a new job title
+
+        # TODO - refer
+        https://www.django-rest-framework.org/api-guide/generic-views/#methods
+
+        Args:
+            serializer: validated serializer
+
+        Returns:
+
+        """
+
+        serializer.save(user=self.request.user)
