@@ -50,4 +50,6 @@ class JobTitleDetailSerializer(JobTitleSerializer):
     """
 
     class Meta(JobTitleSerializer.Meta):
-        fields = JobTitleSerializer.Meta.fields + "__all__"
+        fields = JobTitleSerializer.Meta.fields + [
+            "user", "job_description", "portal"
+        ]

@@ -164,13 +164,12 @@ class PrivateJobTitleApiTests(TestCase):
         )
 
         job_title = create_job_title(
-            user=other_user,
+            user=self.user,
             title="Python developer",
             portal=self.portal,
             job_description=create_job_description()
         )
         url = detail_url(job_title.id)
         res = self.client.get(url)
-
         serializer = JobTitleDetailSerializer(job_title)
         self.assertEqual(res.data, serializer.data)
