@@ -14,7 +14,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 ## import models
-from core.models import JobTitle
+from core.models import JobTitle, Portal
 from job import serializers
 
 

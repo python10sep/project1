@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "drf_spectacular",
     "user",
-    "job"
+    "job",
+    "portal",
+    "jobdescription",
 ]
 
 MIDDLEWARE = [
